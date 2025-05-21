@@ -1,0 +1,4 @@
+criação, alteração e remoção de contas de users
+criação, alteração e remoção de bids
+pesquisa de produtos por product_type e pelo nome
+página dos favoritos 

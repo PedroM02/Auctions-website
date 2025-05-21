@@ -1,6 +1,12 @@
 # main.py
 from fastapi import FastAPI
-from api.routes_user import router as user_router
+
+from .api import bid, product, home
+from .db.connection import Base, engine
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-app.include_router(user_router, prefix="/users")
+app.include_router(bid.router)
+app.include_router(product.router)
+app.include_router(home.router)
