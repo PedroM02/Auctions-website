@@ -1,13 +1,32 @@
 <!-- templates/home.html -->
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
+    <meta charset="UTF-8">
     <title>Home</title>
+    <style>
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
 </head>
 <body>
+    <div class="top-right">
+        {% if not request.session.get("user_id") %}
+            <form action="/login" method="get">
+                <button type="submit">Login</button>
+            </form>
+        {% else %}
+            <span>Bem-vindo!</span>
+        {% endif %}
+    </div>
+
     <h1>Bem-vindo ao Site de Leilões</h1>
     <form action="/products">
         <button type="submit">Ver Produtos</button>
     </form>
 </body>
 </html>
+
