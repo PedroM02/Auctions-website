@@ -1,0 +1,33 @@
+<!-- templates/register.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Registo</title>
+</head>
+<body>
+    <h1>Criar Conta</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="post" action="/register" enctype="multipart/form-data">
+        <label>Username:
+            <input type="text" name="name" required>
+        </label><br><br>
+        <label>Password:
+            <input type="password" name="password" required>
+        </label><br><br>
+        <label>Email:
+            <input type="email" name="email" required>
+        </label><br><br>
+        <label>Data de Nascimento:
+            <input type="date" name="birth_date" required>
+        </label><br><br>
+        <label>Foto de Perfil (opcional):
+            <input type="file" name="profile_picture">
+        </label><br><br>
+        <button type="submit">Registar</button>
+    </form>
+    <a href="/">Voltar à Home</a>
+</body>
+</html>

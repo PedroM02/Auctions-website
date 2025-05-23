@@ -4,6 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <script>
+        // Impede espaços no input do username
+        function preventSpaces(event) {
+            if (event.key === ' ') {
+                event.preventDefault();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const usernameInput = document.querySelector('input[name="name"]');
+            usernameInput.addEventListener('keydown', preventSpaces);
+        });
+    </script>
 </head>
 <body>
     <h1>Login</h1>
@@ -12,7 +25,7 @@
     {% endif %}
     <form method="post" action="/login">
         <label>Username:
-            <input type="text" name="username" required>
+            <input type="text" name="name" required>
         </label><br><br>
         <label>Password:
             <input type="password" name="password" required>

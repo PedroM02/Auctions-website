@@ -15,7 +15,7 @@ class User(Base):
     __table_args__ = {"schema": "siteLeiloes"}
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String(100), nullable=False)
+    name = Column(String(100), nullable=False, unique=True)
     password = Column(String(128), nullable=False)
     email = Column(String(100), unique=True, nullable=False)
     birthdate = Column(Date)
