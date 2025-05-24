@@ -23,6 +23,9 @@
             </form>
         {% else %}
             <span>Bem-vindo/a {{ request.session.get("username") }}! </span>
+            <form action="/profile" method="get" style="display:inline;">
+                 <button type="submit">Perfil</button>
+            </form>
             <form action="/logout" method="post" style="display:inline;">
                 <button type="submit">Logout</button>
             </form>

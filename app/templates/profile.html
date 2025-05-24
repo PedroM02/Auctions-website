@@ -1,0 +1,25 @@
+<!-- templates/profile.html -->
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Perfil do Utilizador</title>
+</head>
+<body>
+    <h1>Perfil do Utilizador</h1>
+
+    {% if user.profile_picture %}
+        <p><strong>Foto de Perfil:</strong></p>
+        <img src="{{ user.profile_picture }}" alt="Foto de Perfil" style="max-width: 200px;">
+    {% else %}
+        <img src="/static/img/default-avatar-profile-icon.jpg" alt="Foto de Perfil Padrão" style="max-width: 200px;">
+    {% endif %}
+
+    <p><strong>Nome:</strong> {{ user.name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <p><strong>Data de Nascimento:</strong> {{ user.birth_date }}</p>
+
+    <br>
+    <a href="/">Voltar à Home</a>
+</body>
+</html>

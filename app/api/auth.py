@@ -20,7 +20,7 @@ def register_form(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 @router.post("/register")
-async def register_user(request: Request, name: str = Form(...), password: str = Form(...), email: str = Form(...), birth_date: str = Form(...), db: Session = Depends(get_db)):
+def register_user(request: Request, name: str = Form(...), password: str = Form(...), email: str = Form(...), birth_date: str = Form(...), db: Session = Depends(get_db)):
     # Verifica se já existe user
     existing_user = get_user_by_username(db, name)
     if existing_user:
@@ -56,6 +56,7 @@ async def register_user(request: Request, name: str = Form(...), password: str =
 
     # Sessão iniciada após registo
     request.session["user_id"] = new_user.id
+    request.session["username"] = new_user.name
     return RedirectResponse(url="/", status_code=HTTP_302_FOUND)
 
 
@@ -65,7 +66,7 @@ def login_form(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
 @router.post("/login")
-async def login_user(request: Request, name: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+def login_user(request: Request, name: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
     print(f"Recebido: username={name}, password={password}")
 
     user = get_user_by_username(db, name)
