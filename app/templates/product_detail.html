@@ -43,7 +43,14 @@
 <body>
     <div class="container">
         <h1>{{ product.name }}</h1>
+        {% for photo_url in product.photos.split(";") %}
+            <img src="{{ photo_url }}" style="max-width: 200px;">
+        {% endfor %}
         <div class="price">Valor base: {{ product.base_value }}€</div>
+        <div class="seller">
+            <strong>Vendedor:</strong><br>
+            {{ product.seller_name }}
+        </div>
         <div class="description">
             <strong>Descrição:</strong><br>
             {{ product.description }}

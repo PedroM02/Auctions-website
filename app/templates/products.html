@@ -4,9 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Produtos</title>
+    <style>
+        .top-right {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+    </style>
 </head>
 <body>
     <h1>Produtos disponíveis</h1>
+        <div class="top-right">
+            <form action="/products/new" method="get">
+                <button type="submit">Anuncie aqui</button>
+            </form>
+    </div>
     <ul>
         {% for product in products %}
             <li>
@@ -14,6 +26,7 @@
                     <strong>{{ product.name }}</strong><br>
                 </a><br>
                 {{ product.description }}<br>
+                Vendedor: {{ product.seller_name }}<br>
                 Valor base: {{ product.base_value }}€<br>
                 Início: {{ product.start_date }} | Fim: {{ product.end_date }}
             </li>

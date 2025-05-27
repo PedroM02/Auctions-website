@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Anunciar Produto</title>
+</head>
+<body>
+    <h1>Anuncie o seu produto!</h1>
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+    <form action="/products/new" method="post" enctype="multipart/form-data">
+        <label>Nome:
+            <input type="text" name="name" required>
+        </label><br><br>
+        <label>Descrição:
+            <textarea name="description" required></textarea>
+        </label><br><br>
+        <label>Valor Base (€):
+            <input type="number" name="base_value" required min="1">
+        </label><br><br>
+        <label>Data de fim (máx. 30 dias a partir de hoje):
+            <input type="date" name="end_date" required id="end_date">
+        </label><br><br>
+        <label>Fotos:
+            <input type="file" name="photos" multiple>
+        </label><br><br>
+        <button type="submit">Anunciar</button>
+    </form>
+    <a href="/">Voltar à Home</a>
+
+    <script>
+        window.addEventListener("DOMContentLoaded", () => {
+            const today = new Date();
+            const maxDate = new Date();
+            maxDate.setDate(today.getDate() + 30);
+
+            const formatDate = (date) => {
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0');
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            };
+
+            const endDateInput = document.getElementById("end_date");
+            endDateInput.min = formatDate(today);
+            endDateInput.max = formatDate(maxDate);
+        });
+    </script>
+</body>
+</html>

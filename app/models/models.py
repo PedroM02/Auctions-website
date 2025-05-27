@@ -50,6 +50,7 @@ class Product(Base):
     vdf_start_time = Column(DateTime)
     vdf_output = Column(Text)
     photos = Column(Text)
+    seller_id = Column(Integer, ForeignKey("siteLeiloes.user.id"), nullable=False)
     winner_id = Column(Integer, ForeignKey("siteLeiloes.user.id"))
     product_type_id = Column(Integer, ForeignKey("siteLeiloes.product_type.id"))
 

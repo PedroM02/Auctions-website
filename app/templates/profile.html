@@ -19,6 +19,13 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Data de Nascimento:</strong> {{ user.birth_date }}</p>
 
+    <form id="deleteForm" action="/delete-account" method="post" style="display:inline;">
+    <button type="submit" onclick="return confirm('Tem a certeza que deseja apagar a sua conta? Esta ação é irreversível.');"
+            style="background-color: red; color: white; padding: 10px; border: none; border-radius: 5px;">
+        Apagar Conta
+    </button>
+    </form>
+
     <br>
     <a href="/">Voltar à Home</a>
 </body>

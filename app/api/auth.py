@@ -1,10 +1,12 @@
 # app/api/auth.py
 from datetime import datetime
-from fastapi import APIRouter, Request, Form, Depends
+from fastapi import APIRouter, Request, Form, Depends, UploadFile, File
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_302_FOUND
+import os
+import shutil
 
 from ..db.connection import get_db
 from ..crud.user import *
@@ -20,11 +22,14 @@ def register_form(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 @router.post("/register")
-def register_user(request: Request, name: str = Form(...), password: str = Form(...), email: str = Form(...), birth_date: str = Form(...), db: Session = Depends(get_db)):
+def register_user(request: Request, name: str = Form(...), password: str = Form(...), email: str = Form(...), birth_date: str = Form(...), profile_picture: UploadFile = File(None), db: Session = Depends(get_db)):
     # Verifica se já existe user
     existing_user = get_user_by_username(db, name)
     if existing_user:
         return templates.TemplateResponse("register.html", {"request": request, "error": "Username já existe"})
+
+    if verify_duplicate_email(db, email):
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Email já está em uso"})
 
     # Valida espaços no username
     if not verify_username_spaces(name):
@@ -33,14 +38,22 @@ def register_user(request: Request, name: str = Form(...), password: str = Form(
     # Hash da password
     hashed_password = bcrypt.hash(password)
     
-    # Lida com foto de perfil
-    #profile_path = None
-    #if profile_picture:
-    #    filename = f"profile_{username}_{profile_picture.filename}"
-    #    profile_path = os.path.join("app/static/profile_pics", filename)
-    #    os.makedirs(os.path.dirname(profile_path), exist_ok=True)
-    #    with open(profile_path, "wb") as buffer:
-    #        shutil.copyfileobj(profile_picture.file, buffer)
+    # Lida com imagem (se houver)
+    # Caminho absoluto da pasta static na raiz do projeto
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    static_dir = os.path.join(project_root, "static", "profile_pictures")
+    os.makedirs(static_dir, exist_ok=True)
+
+    profile_path = None
+    if profile_picture:
+        filename = f"profile_{name}_{profile_picture.filename}"
+        full_path = os.path.join(static_dir, filename)
+
+        with open(full_path, "wb") as buffer:
+            shutil.copyfileobj(profile_picture.file, buffer)
+
+        # Caminho público a ser guardado na base de dados
+        profile_path = f"/static/profile_pictures/{filename}"
 
     # Cria e guarda o user
     new_user = User(
@@ -48,8 +61,7 @@ def register_user(request: Request, name: str = Form(...), password: str = Form(
         password=hashed_password,
         email=email,
         birthdate=datetime.strptime(birth_date, "%Y-%m-%d"),
-        profile_picture=None
-        #profile_picture=profile_path
+        profile_picture=profile_path
     )
     db.add(new_user)
     db.commit()
