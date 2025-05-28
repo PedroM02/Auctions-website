@@ -43,9 +43,13 @@
 <body>
     <div class="container">
         <h1>{{ product.name }}</h1>
-        {% for photo_url in product.photos.split(";") %}
-            <img src="{{ photo_url }}" style="max-width: 200px;">
-        {% endfor %}
+        {% if product.photos %}
+            {% for photo_url in product.photos.split(";") %}
+                <img src="{{ photo_url }}" style="max-width: 200px;">
+            {% endfor %}
+        {% else %}
+            <img src="/static/default_img/default-product-img.jpg" alt="Foto de Perfil Padrão" style="max-width: 200px;"><br>
+        {% endif %}
         <div class="price">Valor base: {{ product.base_value }}€</div>
         <div class="seller">
             <strong>Vendedor:</strong><br>

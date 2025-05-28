@@ -29,6 +29,14 @@
                 <a href="/products/{{ product.id }}{% if query %}?q={{ query }}{% endif %}">
                     <strong>{{ product.name }}</strong><br>
                 </a><br>
+                {% if product.photos %}
+                    {% set first_photo = product.photos.split(";")[0] %}
+                    {% if first_photo %}
+                        <img src="{{ first_photo }}" style="max-width: 150px;"><br>
+                    {% endif %}
+                {% else %}
+                    <img src="/static/default_img/default-product-img.jpg" alt="Foto de Perfil Padrão" style="max-width: 200px;"><br>
+                {% endif %}
                 {{ product.description }}<br>
                 Valor base: {{ product.base_value }}€<br>
                 Início: {{ product.start_date }} | Fim: {{ product.end_date }}

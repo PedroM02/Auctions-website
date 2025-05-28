@@ -6,4 +6,5 @@ página dos favoritos
 edição e remoção de produtos
 edição de contas de users
 filtar products por product_type
+data de criação de conta no perfil
 verificação de idade ao registar, ao dar algum erro ao registar não apagar os dados todos introduzidos
