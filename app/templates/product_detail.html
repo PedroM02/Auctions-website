@@ -55,7 +55,7 @@
             <strong>Descrição:</strong><br>
             {{ product.description }}
         </div>
-        <a href="/products">← Voltar à lista de produtos</a>
+        <a href="/products{% if query %}?q={{ query }}{% endif %}">← Voltar à lista de produtos</a>
     </div>
 </body>
 </html>

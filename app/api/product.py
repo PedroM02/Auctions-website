@@ -74,15 +74,22 @@ def create_product(
     return RedirectResponse("/products", status_code=HTTP_302_FOUND)
 
 @router.get("/products", response_class=HTMLResponse, response_model=List[ProductOut])
-def show_all_products(request: Request, db: Session = Depends(get_db)):
-    products = get_all_products_with_seller_name(db)
+def show_all_products(request: Request, q: str = "", db: Session = Depends(get_db)):
+    products = get_all_products(db)
+    query = db.query(Product)
+    if q:
+        query = query.filter(
+            (Product.name.ilike(f"%{q}%")) |
+            (Product.description.ilike(f"%{q}%"))
+        )
 
+    products = query.all()
     return templates.TemplateResponse(
         "products.html", 
-        {"request": request, "products": products})
+        {"request": request, "products": products, "query": q})
 
 @router.get("/products/{product_id}", response_class=HTMLResponse)
-def show_product(request: Request, product_id: int, db: Session = Depends(get_db)):
+def show_product(request: Request, product_id: int, q: str = "", db: Session = Depends(get_db)):
     product = get_product_with_seller_name(db, product_id)[0]
     if not product:
         return templates.TemplateResponse(
@@ -91,5 +98,5 @@ def show_product(request: Request, product_id: int, db: Session = Depends(get_db
     
     return templates.TemplateResponse(
         "product_detail.html",
-        {"request": request, "product": product})
+        {"request": request, "product": product, "query": q})
 

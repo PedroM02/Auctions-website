@@ -1,6 +1,9 @@
-pesquisa de produtos por product_type e pelo nome
 criação, alteração e remoção de bids
+adicionar o vencedor
+eliminar os products uma semana depois destes terminarem
+histórico de licitações
 página dos favoritos
 edição e remoção de produtos
 edição de contas de users
+filtar products por product_type
 verificação de idade ao registar, ao dar algum erro ao registar não apagar os dados todos introduzidos
