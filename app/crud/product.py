@@ -18,10 +18,10 @@ import shutil
 from .user import get_user_by_id
 
 lisbon_tz = ZoneInfo("Europe/Lisbon")
+utc_tz = ZoneInfo("UTC")
 
 
 def get_valid_bids_for_product(db: Session, product: Product):
-    print("entrou no get_valid_bids_for_product")
     if not product.rsa_private_key_encrypted:
         return []
 
@@ -117,7 +117,7 @@ def get_all_products_with_seller_name(db: Session):
     
     return product_data
 
-def create_new_product(user_id: any, name: str, description: str, base_value: int, end_dt: datetime, photos: List[UploadFile], db: Session):
+def create_new_product(user_id: any, name: str, description: str, base_value: int, end_dt: datetime, photos: List[UploadFile], db: Session, start_dt: datetime):
     # Gerar par de chaves RSA
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     public_key = private_key.public_key()
@@ -139,7 +139,7 @@ def create_new_product(user_id: any, name: str, description: str, base_value: in
     os.makedirs("static/product_photos", exist_ok=True)
     for photo in photos:
         if photo.filename:
-            filename = f"{datetime.now().timestamp()}_{photo.filename}"
+            filename = f"{datetime.now(utc_tz).timestamp()}_{photo.filename}"
             path = os.path.join("static/product_photos", filename)
             with open(path, "wb") as buffer:
                 shutil.copyfileobj(photo.file, buffer)
@@ -149,7 +149,7 @@ def create_new_product(user_id: any, name: str, description: str, base_value: in
         name=name,
         description=description,
         base_value=base_value,
-        start_date=datetime.now().strftime("%d-%m-%Y %H:%M"),
+        start_date=start_dt,
         end_date=end_dt,
         vdf_start_time=None,
         vdf_output=None,
@@ -165,7 +165,7 @@ def create_new_product(user_id: any, name: str, description: str, base_value: in
 
     
 def finalize_expired_auctions(db: Session):
-    now = datetime.now()
+    now = datetime.now(tz=utc_tz)
     products = db.query(Product).filter(
         Product.end_date <= now,
         Product.winner_id == None

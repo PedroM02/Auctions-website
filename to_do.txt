@@ -1,5 +1,3 @@
-Corrigir bug que deixa criar leiloes com datas que já passaram(do tempo atuial até 1h atrás que já passou) e bug de aparecer hora que coloquei no end_date + 1h
-BUG DAS DATAS
 criação, alteração e remoção de bids
 eliminar os products uma semana depois destes terminarem
 histórico de licitações
@@ -11,3 +9,4 @@ filtar products por product_type
 data de criação de conta no perfil
 O criador do produto não efetuar licitações no mesmo
 verificação de idade ao registar, ao dar algum erro ao registar não apagar os dados todos introduzidos
+guardar na bd a timezone do user para poder adaptar as horas

@@ -49,14 +49,25 @@ def create_product(
     else:
         hour, minute = 18, 0  # default to 18h00
 
-    end_dt = datetime.combine(date_part, time(hour, minute))
-    if end_dt.now(tz=utc_tz) > datetime.now(tz=lisbon_tz) + timedelta(days=30):
+    end_dt_local = datetime.combine(date_part, time(hour, minute)).replace(tzinfo=lisbon_tz)
+    end_dt = end_dt_local.astimezone(utc_tz)
+
+    # Obter a hora atual como hora de início (também UTC)
+    start_dt = datetime.now(tz=utc_tz)
+
+    if end_dt > datetime.now(tz=utc_tz) + timedelta(days=90):
         return templates.TemplateResponse("create_product.html", {
             "request": request,
-            "error": "Data de fim excede o limite de 30 dias."
+            "error": "Data de fim excede o limite de 90 dias."
         })
     
-    create_new_product(user_id, name, description, base_value, end_dt, photos, db)
+    if end_dt < start_dt + timedelta(minutes=1):
+        return templates.TemplateResponse("create_product.html", {
+            "request": request,
+            "error": "A data de fim tem de ser pelo menos 1 dia após o início do leilão."
+        })
+    
+    create_new_product(user_id, name, description, base_value, end_dt, photos, db, start_dt)
     db.commit()
 
     return RedirectResponse("/products", status_code=HTTP_302_FOUND)
@@ -70,7 +81,7 @@ def show_all_products(request: Request, q: str = "", finished: bool = False, db:
             (Product.name.ilike(f"%{q}%")) |
             (Product.description.ilike(f"%{q}%"))
         )
-    now = datetime.now(tz=lisbon_tz)
+    now = datetime.now(tz=utc_tz)
     print(Product.end_date)
     if finished:
         query = query.filter(Product.end_date <= now)
@@ -78,9 +89,19 @@ def show_all_products(request: Request, q: str = "", finished: bool = False, db:
         query = query.filter(Product.end_date > now)
 
     products = query.all()
+
+    # end_date para horário de Lisboa
+    for product in products:
+        if product.end_date:
+            product.end_date = product.end_date.astimezone(lisbon_tz)
+        if product.start_date:
+            product.start_date = product.start_date.astimezone(lisbon_tz)
+        product.end_date_str = product.end_date.astimezone(lisbon_tz).strftime("%d-%m-%Y %H:%M")
+
+
     return templates.TemplateResponse(
         "products.html",
-        {"request": request, "products": products, "query": q, "finished": finished, "now": now})
+        {"request": request, "products": products, "query": q, "finished": finished})
 
 @router.get("/products/{product_id}", response_class=HTMLResponse)
 def show_product(request: Request, product_id: int, q: str = "", finished: bool = False, db: Session = Depends(get_db)):

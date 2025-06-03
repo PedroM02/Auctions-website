@@ -60,9 +60,9 @@
                 Valor base: {{ product.base_value }}€<br>
 
                 {% if finished %}
-                    Leilão terminou em: {{ product.end_date }}
+                    Leilão terminou em: {{ product.end_date_str }}
                 {% else %}
-                    {{product.end_date}}
+                    Fim de leilão: {{product.end_date_str}}<br>
                     Termina em: <span class="countdown" data-endtime="{{ product.end_date }}"></span>
                 {% endif %}
             </li>
