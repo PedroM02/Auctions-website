@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Date, DateTime, Text, Table
+from sqlalchemy import Column, Double, Integer, String, ForeignKey, Date, DateTime, Text, Table
 from sqlalchemy.orm import relationship
 from ..db.connection import Base
 
@@ -45,14 +45,16 @@ class Product(Base):
     name = Column(String(100), nullable=False)
     description = Column(Text)
     base_value = Column(Integer)
-    start_date = Column(DateTime)
-    end_date = Column(DateTime)
+    start_date = Column(DateTime(timezone=False))
+    end_date = Column(DateTime(timezone=False))
     vdf_start_time = Column(DateTime)
     vdf_output = Column(Text)
     photos = Column(Text)
     seller_id = Column(Integer, ForeignKey("siteLeiloes.user.id"), nullable=False)
     winner_id = Column(Integer, ForeignKey("siteLeiloes.user.id"))
     product_type_id = Column(Integer, ForeignKey("siteLeiloes.product_type.id"))
+    rsa_public_key = Column(Text, nullable=True)
+    rsa_private_key_encrypted = Column(Text, nullable=True)
 
     bids = relationship("Bid", backref="product")
     #favorited_by = relationship("User", secondary=favourites_table, back_populates="favourites")
@@ -66,6 +68,7 @@ class Bid(Base):
     time_stamp = Column(DateTime, nullable=False)
     encrypted_value = Column(Text, nullable=False)
     commitment_hash = Column(Text, nullable=False)
+    salt = Column(Text, nullable=False)
     user_id = Column(Integer, ForeignKey("siteLeiloes.user.id"))
     product_id = Column(Integer, ForeignKey("siteLeiloes.product.id"))
 

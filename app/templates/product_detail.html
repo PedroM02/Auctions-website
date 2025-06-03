@@ -59,7 +59,34 @@
             <strong>Descrição:</strong><br>
             {{ product.description }}
         </div>
-        <a href="/products{% if query %}?q={{ query }}{% endif %}">← Voltar à lista de produtos</a>
+
+        {% if finished %}
+            <div class="winner">
+                <strong>Leilão terminado!</strong><br>
+                Vencedor: {{ product.winner_name }}<br>
+                Licitação vencedora: {{ product.bids[0].value }}€
+            </div>
+
+            <div class="bids">
+                <strong>Licitações:</strong>
+                {% for bid in product.bids %}
+                    {% if bid.user_id %}
+                    <div class="bid">
+                        {{ bid.username }} — {{ bid.value }}€, {{ bid.time_stamp.strftime("%Y-%m-%d %H:%M:%S") }}
+                    </div>
+                    {% else %}
+                    Sem licitações
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+        {% else %}
+            Termina em: <span class="countdown" data-endtime="{{ product.end_date }}"></span><br>
+            <a href="/products/{{ product.id }}/bid" class="bid-button">Realizar Licitação</a><br>
+        {% endif %}
+
+        <a href="/products{% if query or finished is not none %}?{% if query %}q={{ query }}{% endif %}{% if query and finished is not none %}&{% endif %}{% if finished is not none %}finished={{ 'true' if finished else 'false' }}{% endif %}{% endif %}">← Voltar à lista de produtos</a>
     </div>
+    <script src="/static/js/countdown.js"></script>
 </body>
 </html>

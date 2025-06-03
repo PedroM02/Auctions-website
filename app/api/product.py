@@ -1,13 +1,12 @@
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from fastapi import APIRouter, Request, Depends, Form, UploadFile, File
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.status import HTTP_302_FOUND
-import os
-import shutil
 
+from zoneinfo import ZoneInfo
 from ..db.connection import get_db
 from ..crud.product import *
 from ..schemas.schemas import ProductOut
@@ -15,6 +14,9 @@ from ..schemas.schemas import ProductOut
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+lisbon_tz = ZoneInfo("Europe/Lisbon")
+utc_tz = ZoneInfo("UTC")
+
 
 @router.get("/products/new", response_class=HTMLResponse)
 def create_product_form(request: Request):
@@ -30,6 +32,7 @@ def create_product(
     description: str = Form(...),
     base_value: int = Form(...),
     end_date: str = Form(...),
+    end_time: str = Form(None),
     photos: List[UploadFile] = File([]),
     db: Session = Depends(get_db)
 ):
@@ -37,44 +40,29 @@ def create_product(
     if not user_id:
         return RedirectResponse("/", status_code=HTTP_302_FOUND)
 
-    end_dt = datetime.strptime(end_date, "%Y-%m-%d")
-    if end_dt > datetime.now() + timedelta(days=30):
+    # Parse end date
+    date_part = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    # Parse hour and minute if provided, otherwise default to 18:00
+    if end_time:
+        hour, minute = map(int, end_time.split(":"))
+    else:
+        hour, minute = 18, 0  # default to 18h00
+
+    end_dt = datetime.combine(date_part, time(hour, minute))
+    if end_dt.now(tz=utc_tz) > datetime.now(tz=lisbon_tz) + timedelta(days=30):
         return templates.TemplateResponse("create_product.html", {
             "request": request,
             "error": "Data de fim excede o limite de 30 dias."
         })
-
-    # Guardar fotos
-    photo_paths = []
-    os.makedirs("static/product_photos", exist_ok=True)
-    for photo in photos:
-        if photo.filename:
-            filename = f"{datetime.now().timestamp()}_{photo.filename}"
-            path = os.path.join("static/product_photos", filename)
-            with open(path, "wb") as buffer:
-                shutil.copyfileobj(photo.file, buffer)
-            photo_paths.append(f"/static/product_photos/{filename}")
-
-    new_product = Product(
-        name=name,
-        description=description,
-        base_value=base_value,
-        start_date=datetime.now().strftime("%d-%m-%Y %H:%M"),
-        end_date=end_dt,
-        vdf_start_time=None,
-        vdf_output=None,
-        photos=";".join(photo_paths),  # armazenar como texto separado por ponto e vírgula
-        seller_id=user_id,
-        winner_id=None,
-        product_type_id=None
-    )
-    db.add(new_product)
+    
+    create_new_product(user_id, name, description, base_value, end_dt, photos, db)
     db.commit()
 
     return RedirectResponse("/products", status_code=HTTP_302_FOUND)
 
 @router.get("/products", response_class=HTMLResponse, response_model=List[ProductOut])
-def show_all_products(request: Request, q: str = "", db: Session = Depends(get_db)):
+def show_all_products(request: Request, q: str = "", finished: bool = False, db: Session = Depends(get_db)):
     products = get_all_products(db)
     query = db.query(Product)
     if q:
@@ -82,15 +70,21 @@ def show_all_products(request: Request, q: str = "", db: Session = Depends(get_d
             (Product.name.ilike(f"%{q}%")) |
             (Product.description.ilike(f"%{q}%"))
         )
+    now = datetime.now(tz=lisbon_tz)
+    print(Product.end_date)
+    if finished:
+        query = query.filter(Product.end_date <= now)
+    else:
+        query = query.filter(Product.end_date > now)
 
     products = query.all()
     return templates.TemplateResponse(
-        "products.html", 
-        {"request": request, "products": products, "query": q})
+        "products.html",
+        {"request": request, "products": products, "query": q, "finished": finished, "now": now})
 
 @router.get("/products/{product_id}", response_class=HTMLResponse)
-def show_product(request: Request, product_id: int, q: str = "", db: Session = Depends(get_db)):
-    product = get_product_with_seller_name(db, product_id)[0]
+def show_product(request: Request, product_id: int, q: str = "", finished: bool = False, db: Session = Depends(get_db)):
+    product = get_complete_product(db, product_id)[0]
     if not product:
         return templates.TemplateResponse(
             "404.html",
@@ -98,5 +92,5 @@ def show_product(request: Request, product_id: int, q: str = "", db: Session = D
     
     return templates.TemplateResponse(
         "product_detail.html",
-        {"request": request, "product": product, "query": q})
+        {"request": request, "product": product, "query": q, "finished": finished})
 
