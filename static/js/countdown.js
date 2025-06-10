@@ -1,3 +1,6 @@
+// app/static/countdown.pjs
+
+
 function updateCountdowns() {
     const countdownElements = document.querySelectorAll('.countdown');
     countdownElements.forEach(el => {
@@ -6,7 +9,7 @@ function updateCountdowns() {
         const diff = endTime - now;
 
         if (diff <= 0) {
-            el.textContent = "Leilão terminado";
+            el.textContent = "Auction finished";
             return;
         }
 

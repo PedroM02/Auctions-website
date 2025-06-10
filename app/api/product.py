@@ -40,31 +40,30 @@ def create_product(
     if not user_id:
         return RedirectResponse("/", status_code=HTTP_302_FOUND)
 
-    # Parse end date
+    # parse product end_date
     date_part = datetime.strptime(end_date, "%Y-%m-%d").date()
 
-    # Parse hour and minute if provided, otherwise default to 18:00
+    # parse product hour and minute if provided, otherwise default to 18:00
     if end_time:
         hour, minute = map(int, end_time.split(":"))
     else:
-        hour, minute = 18, 0  # default to 18h00
+        hour, minute = 18, 0
 
     end_dt_local = datetime.combine(date_part, time(hour, minute)).replace(tzinfo=lisbon_tz)
     end_dt = end_dt_local.astimezone(utc_tz)
 
-    # Obter a hora atual como hora de início (também UTC)
     start_dt = datetime.now(tz=utc_tz)
 
-    if end_dt > datetime.now(tz=utc_tz) + timedelta(days=90):
+    if end_dt > datetime.now(tz=utc_tz) + timedelta(weeks=24):
         return templates.TemplateResponse("create_product.html", {
             "request": request,
-            "error": "Data de fim excede o limite de 90 dias."
+            "error": "The auction must have less than 6 months"
         })
     
-    if end_dt < start_dt + timedelta(minutes=1):
+    if end_dt < start_dt + timedelta(weeks=1):
         return templates.TemplateResponse("create_product.html", {
             "request": request,
-            "error": "A data de fim tem de ser pelo menos 1 dia após o início do leilão."
+            "error": "The auction must have at least 1 week"
         })
     
     create_new_product(user_id, name, description, base_value, end_dt, photos, db, start_dt)
@@ -89,7 +88,6 @@ def show_all_products(request: Request, q: str = "", finished: bool = False, db:
 
     products = query.all()
 
-    # end_date para horário de Lisboa
     for product in products:
         if product.end_date:
             product.end_date = product.end_date.astimezone(lisbon_tz)
@@ -113,4 +111,3 @@ def show_product(request: Request, product_id: int, q: str = "", finished: bool 
     return templates.TemplateResponse(
         "product_detail.html",
         {"request": request, "product": product, "query": q, "finished": finished})
-

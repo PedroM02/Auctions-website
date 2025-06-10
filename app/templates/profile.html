@@ -3,30 +3,30 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Perfil do Utilizador</title>
+    <title>User profile</title>
 </head>
 <body>
-    <h1>Perfil do Utilizador</h1>
+    <h1>User Profile</h1>
 
     {% if user.profile_picture %}
-        <p><strong>Foto de Perfil:</strong></p>
+        <p><strong>Profile Picture:</strong></p>
         <img src="{{ user.profile_picture }}" alt="Foto de Perfil" style="max-width: 200px;">
     {% else %}
         <img src="/static/default_img/default-avatar-profile-icon.jpg" alt="Foto de Perfil Padrão" style="max-width: 200px;">
     {% endif %}
 
-    <p><strong>Nome:</strong> {{ user.name }}</p>
+    <p><strong>Name:</strong> {{ user.name }}</p>
     <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Data de Nascimento:</strong> {{ user.birth_date }}</p>
+    <p><strong>Birth date:</strong> {{ user.birth_date }}</p>
 
     <form id="deleteForm" action="/delete-account" method="post" style="display:inline;">
-    <button type="submit" onclick="return confirm('Tem a certeza que deseja apagar a sua conta? Esta ação é irreversível.');"
+    <button type="submit" onclick="return confirm('Are you sure that you want to delete your account? This action is irreversible.');"
             style="background-color: red; color: white; padding: 10px; border: none; border-radius: 5px;">
-        Apagar Conta
+        Delete Account
     </button>
     </form>
 
     <br>
-    <a href="/">Voltar à Home</a>
+    <a href="/">Back Home</a>
 </body>
 </html>

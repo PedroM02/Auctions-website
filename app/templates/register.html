@@ -3,10 +3,10 @@
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Registo</title>
+    <title>Register</title>
 </head>
 <body>
-    <h1>Criar Conta</h1>
+    <h1>Create Account</h1>
     {% if error %}
         <p style="color: red;">{{ error }}</p>
     {% endif %}
@@ -20,15 +20,15 @@
         <label>Email:
             <input type="email" name="email" required>
         </label><br><br>
-        <label>Data de Nascimento:
+        <label>Birth Date:
             <input type="date" name="birth_date" required>
         </label><br><br>
-        <label>Foto de Perfil (opcional):
+        <label>Profile Picture (opcional):
             <input type="file" name="profile_picture">
         </label><br><br>
-        <button type="submit">Registar</button>
+        <button type="submit">Sign in</button>
     </form>
-    <a href="/login"><strong>Se já tiver uma conta faça login</strong></a><br>
-    <a href="/">Voltar à Home</a>
+    <a href="/login"><strong>If you already have an account log in</strong></a><br>
+    <a href="/">Back Home</a>
 </body>
 </html>

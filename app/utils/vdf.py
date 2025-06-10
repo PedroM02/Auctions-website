@@ -1,14 +1,17 @@
+# app/utils/vdf.py
+
 import hashlib
-from datetime import datetime, time
+
+from datetime import datetime
 from Crypto.Util import number
-import math
 
-# Configuration
-KEY_SIZE = 2048  # Secure RSA modulus size
+
+# configuration
+KEY_SIZE = 2048  # secure RSA modulus size
 GENERATOR = 5
-MAX_CHALLENGE_SIZE = 32  # Bits for challenge prime
+MAX_CHALLENGE_SIZE = 32  # bits for challenge prime
 
-# Optimized prime handling
+# optimized prime handling
 SMALL_PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
 
 def is_prime(n: int) -> bool:
@@ -71,15 +74,15 @@ def setup(delay: int):
 def eval_vdf(params: dict, input_bytes: bytes):
     """Optimized evaluation with progress tracking"""
     x = int.from_bytes(hashlib.sha256(input_bytes).digest(), 'big') % params['modulus']
-    x = x or 1  # Ensure non-zero
+    x = x or 1  # ensure non-zero
     
-    # Progressively compute squarings
+    # progressively compute squarings
     y = x
     t = params['delay']
     for i in range(t):
         y = pow(y, 2, params['modulus'])
     
-    # Generate proof
+    # generate proof
     l = generate_challenge(x, y)
     r = pow(2, t, l)
     pi = pow(x, (pow(2, t) - r) // l, params['modulus'])
@@ -97,12 +100,13 @@ def verify_vdf(params: dict, input_bytes: bytes, output: int, proof: int) -> boo
     return output % params['modulus'] == (
         pow(proof, l, params['modulus']) * pow(x, r, params['modulus'])
     ) % params['modulus']
+
 # =========================
 # Example usage
 # =========================
 
 if __name__ == "__main__":
-    delay = 1_000_000  # For testing, use small delay. Real usage would need much larger delay.
+    delay = 1_000_000
     print("Generating RSA modulus...")
     params = setup(delay)
 

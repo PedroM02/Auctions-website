@@ -21,7 +21,8 @@ def delete_account(request: Request, db: Session = Depends(get_db)):
     user = get_user_by_id(db, user_id)
     delete_user(db, user)
 
-    request.session.clear()  # logout automático
+    # automatic logout
+    request.session.clear()
     return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
 
 

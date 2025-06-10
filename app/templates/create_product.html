@@ -1,36 +1,37 @@
+<!-- templates/create_product.html -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Anunciar Produto</title>
+    <title>List Product</title>
 </head>
 <body>
-    <h1>Anuncie o seu produto!</h1>
+    <h1>Announce your product!</h1>
     {% if error %}
         <p style="color:red;">{{ error }}</p>
     {% endif %}
     <form action="/products/new" method="post" enctype="multipart/form-data">
-        <label>Nome:
+        <label>Name:
             <input type="text" name="name" required>
         </label><br><br>
-        <label>Descrição:
+        <label>Description:
             <textarea name="description" required></textarea>
         </label><br><br>
-        <label>Valor Base (€):
+        <label>Starting value (€):
             <input type="number" name="base_value" required min="1">
         </label><br><br>
-        <label>Data de fim (máx. 30 dias a partir de hoje):
+        <label>End date (máx. 6 months since today):
             <input type="date" name="end_date" required id="end_date">
         </label><br><br>
-        <label>Hora de fim (18h por predefinição):
+        <label>End hour (18h by default):
             <input type="time" name="end_time">
         </label><br><br>
-        <label>Fotos:
+        <label>Photos:
             <input type="file" name="photos" multiple>
         </label><br><br>
-        <button type="submit">Anunciar</button>
+        <button type="submit">Announce</button>
     </form>
-    <a href="/">Voltar à Home</a>
+    <a href="/">Back Home</a>
 
     <script>
         window.addEventListener("DOMContentLoaded", () => {

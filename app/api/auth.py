@@ -1,18 +1,21 @@
 # app/api/auth.py
+
+import os
+import shutil
+
 from datetime import datetime
 from fastapi import APIRouter, Request, Form, Depends, UploadFile, File
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_302_FOUND
-import os
-import shutil
+from passlib.hash import bcrypt
 
 from ..db.connection import get_db
 from ..crud.user import *
 from ..models.models import User
 from ..utils.security import verify_username_spaces
-from passlib.hash import bcrypt
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -23,23 +26,22 @@ def register_form(request: Request):
 
 @router.post("/register")
 def register_user(request: Request, name: str = Form(...), password: str = Form(...), email: str = Form(...), birth_date: str = Form(...), profile_picture: UploadFile = File(None), db: Session = Depends(get_db)):
-    # Verifica se já existe user
+    # verify if the username is already taken
     existing_user = get_user_by_username(db, name)
     if existing_user:
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Username já existe"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Username already exists"})
 
     if verify_duplicate_email(db, email):
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Email já está em uso"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Email already being used"})
 
-    # Valida espaços no username
+    # verify if there are no spaces in the username
     if not verify_username_spaces(name):
-        return templates.TemplateResponse("register.html", {"request": request, "error": "Username não pode ter espaços"})
+        return templates.TemplateResponse("register.html", {"request": request, "error": "Username can't have spaces"})
 
-    # Hash da password
+    # protect the password
     hashed_password = bcrypt.hash(password)
     
-    # Lida com imagem (se houver)
-    # Caminho absoluto da pasta static na raiz do projeto
+    # path photo saving
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
     static_dir = os.path.join(project_root, "static", "profile_pictures")
     os.makedirs(static_dir, exist_ok=True)
@@ -52,10 +54,9 @@ def register_user(request: Request, name: str = Form(...), password: str = Form(
         with open(full_path, "wb") as buffer:
             shutil.copyfileobj(profile_picture.file, buffer)
 
-        # Caminho público a ser guardado na base de dados
         profile_path = f"/static/profile_pictures/{filename}"
 
-    # Cria e guarda o user
+    # create and save the new User
     new_user = User(
         name=name,
         password=hashed_password,
@@ -66,7 +67,7 @@ def register_user(request: Request, name: str = Form(...), password: str = Form(
     db.add(new_user)
     db.commit()
 
-    # Sessão iniciada após registo
+    # log in after register
     request.session["user_id"] = new_user.id
     request.session["username"] = new_user.name
     return RedirectResponse(url="/", status_code=HTTP_302_FOUND)
@@ -83,9 +84,9 @@ def login_user(request: Request, name: str = Form(...), password: str = Form(...
 
     user = get_user_by_username(db, name)
     if not user or not bcrypt.verify(password, user.password):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Credenciais inválidas"})
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Login failed. Invalid credentials provided"})
     if not verify_username_spaces(name):
-        return templates.TemplateResponse("login.html", {"request": request, "error": "Username não pode ter espaços"})
+        return templates.TemplateResponse("login.html", {"request": request, "error": "Login failed. Username can't have spaces"})
     request.session["user_id"] = user.id
     request.session["username"] = user.name 
     return RedirectResponse(url="/", status_code=HTTP_302_FOUND)

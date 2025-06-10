@@ -1,26 +1,30 @@
-from datetime import datetime
+# app/crud/bid.py
+
 import hashlib
 import os
+import base64
+
+from datetime import datetime
 from sqlalchemy.orm import Session
-from ..models.models import Bid, Product
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import serialization, hashes
-import base64
+
+from ..models.models import Bid, Product
 
 
 def create_new_bid(db: Session, product: Product, user_id: int, product_id: int, bid_value: int, time_stamp: datetime):
 
-    # 1. Gerar salt aleatório
+    # random salt
     salt = os.urandom(16).hex()
 
-    # 2. Gerar commitment hash = SHA256(valor + salt)
+    # commitment hash = SHA256(valor + salt)
     commitment_input = f"{bid_value}{salt}".encode()
     commitment_hash = hashlib.sha256(commitment_input).hexdigest()
 
-    # 3. Obter a chave pública do produto
+
     public_key = serialization.load_pem_public_key(product.rsa_public_key.encode())
 
-    # 4. Encriptar o valor da licitação
+    # encrypt the bid with the product's public key
     encrypted_value = public_key.encrypt(
         str(bid_value).encode(),
         padding.OAEP(

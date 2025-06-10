@@ -1,8 +1,9 @@
+<!-- app/templates/products.html -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Lista de Produtos</title>
+    <title>Product's List</title>
     <style>
         .top-right {
             position: absolute;
@@ -12,31 +13,31 @@
     </style>
 </head>
 <body>
-    <h1>Produtos disponíveis</h1>
-    <a href="/">Voltar à Home</a><br><br>
+    <h1>Products</h1>
+    <a href="/">Back Home</a><br><br>
 
     <form action="/products" method="get">
-        <input type="text" name="q" placeholder="Pesquisar produtos..." value="{{ query | default('') }}">
+        <input type="text" name="q" placeholder="Search products..." value="{{ query | default('') }}">
         {% if finished %}
             <input type="hidden" name="finished" value="true">
         {% endif %}
-        <button type="submit">Pesquisar</button>
+        <button type="submit">Search</button>
     </form>
 
     <div class="top-right">
         {% if not finished %}
             <form action="/products" method="get">
                 <input type="hidden" name="finished" value="true">
-                <button type="submit">Mostrar leilões terminados</button>
+                <button type="submit">Show ended auctions</button>
             </form>
         {% else %}
             <form action="/products" method="get">
                 <input type="hidden" name="finished" value="false">
-                <button type="submit">Mostrar leilões ativos</button>
+                <button type="submit">Show on going auctions</button>
             </form>
         {% endif %}
         <form action="/products/new" method="get">
-            <button type="submit">Anuncie aqui</button>
+            <button type="submit">Announce here</button>
         </form>
     </div>
 
@@ -53,17 +54,17 @@
                         <img src="{{ first_photo }}" style="max-width: 150px;"><br>
                     {% endif %}
                 {% else %}
-                    <img src="/static/default_img/default-product-img.jpg" alt="Foto de Perfil Padrão" style="max-width: 150px;"><br>
+                    <img src="/static/default_img/default-product-img.jpg" alt="Default profile picture" style="max-width: 150px;"><br>
                 {% endif %}
 
                 {{ product.description }}<br>
-                Valor base: {{ product.base_value }}€<br>
+                Starting value: {{ product.base_value }}€<br>
 
                 {% if finished %}
-                    Leilão terminou em: {{ product.end_date_str }}
+                    The Auction finished on: {{ product.end_date_str }}
                 {% else %}
-                    Fim de leilão: {{product.end_date_str}}<br>
-                    Termina em: <span class="countdown" data-endtime="{{ product.end_date }}"></span>
+                    Finish date: {{product.end_date_str}}<br>
+                    Ends in: <span class="countdown" data-endtime="{{ product.end_date }}"></span>
                 {% endif %}
             </li>
             <hr>

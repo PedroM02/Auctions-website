@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>Login</title>
     <script>
-        // Impede espaços no input do username
+        // prevents spaces in the username input
         function preventSpaces(event) {
             if (event.key === ' ') {
                 event.preventDefault();
@@ -30,9 +30,9 @@
         <label>Password:
             <input type="password" name="password" required>
         </label><br><br>
-        <button type="submit">Entrar</button>
+        <button type="submit">Log in</button>
     </form>
-    <a href="/register"><strong>Se ainda não tiver conta registe-se</strong></a><br>
-    <a href="/">Voltar à Home</a>
+    <a href="/register"><strong>If you don't have an account registe yourself</strong></a><br>
+    <a href="/">Back Home</a>
 </body>
 </html>

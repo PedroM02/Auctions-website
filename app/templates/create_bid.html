@@ -1,23 +1,24 @@
+<!-- templates/creat_bid.html -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
-    <title>Fazer licitação</title>
+    <title>Create bid</title>
 </head>
 <body>
-  <h1>Faça a sua licitação!</h1>
+  <h1>Place your bid!</h1>
   {% if error %}
     <p style="color:red;">{{ error }}</p>
   {% endif %}
   {% if finished %}
     <p style="color:red;">{{ error2 }}</p>
   {% endif %}
-  <div class="price">Valor base: {{ product.base_value }}€</div>
+  <div class="price">Starting value: {{ product.base_value }}€</div>
   <form method="post" action="/products/{{ product.id }}/bid" enctype="multipart/form-data">
-    <label for="bid_value">Valor da licitação (€):</label>
+    <label for="bid_value">Bid value (€):</label>
     <input type="number" name="bid_value" id="bid_value" required min="1" step="1">
 
-    <button type="submit">Submeter Licitação</button>
+    <button type="submit">Submit Bid</button>
   </form>
   <a href="/products/{{ product.id }}">Voltar</a>
 </body>

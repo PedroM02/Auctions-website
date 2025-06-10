@@ -1,7 +1,9 @@
+enquanto a vdf corre aparecer no ecrã(calculando vencedor)
+quando uma pessoa faz uma licitação aparecer uma notificação a dizer que a licitação foi feita
+histórico de licitações
 bug de aparecer botão da licitação mesmo depois do leilão terminar
 alteração e remoção de bids
 eliminar os products uma semana depois destes terminarem
-histórico de licitações
 página dos favoritos
 edição e remoção de produtos
 edição de contas de users

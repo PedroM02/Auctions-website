@@ -1,3 +1,5 @@
+# app/utils/security.py
+
 import bcrypt
 
 def hash_password(plain_password: str) -> str:

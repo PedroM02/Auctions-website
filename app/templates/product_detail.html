@@ -1,3 +1,4 @@
+<!-- app/templates/product_detail.html -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -48,41 +49,41 @@
                 <img src="{{ photo_url }}" style="max-width: 200px;">
             {% endfor %}
         {% else %}
-            <img src="/static/default_img/default-product-img.jpg" alt="Foto de Perfil Padrão" style="max-width: 200px;"><br>
+            <img src="/static/default_img/default-product-img.jpg" alt="Default profile picture" style="max-width: 200px;"><br>
         {% endif %}
-        <div class="price">Valor base: {{ product.base_value }}€</div>
+        <div class="price">Starting value: {{ product.base_value }}€</div>
         <div class="seller">
-            <strong>Vendedor:</strong><br>
+            <strong>Seller:</strong><br>
             {{ product.seller_name }}
         </div>
         <div class="description">
-            <strong>Descrição:</strong><br>
+            <strong>Description:</strong><br>
             {{ product.description }}
         </div>
 
         {% if finished %}
             <div class="winner">
-                <strong>Leilão terminado!</strong><br>
-                Vencedor: {{ product.winner_name }}<br>
-                Licitação vencedora: {{ product.bids[0].value }}€
+                <strong>The auction has already finished!</strong><br>
+                Winner: {{ product.winner_name }}<br>
+                Winner's Bid: {{ product.bids[0].value }}€
             </div>
 
             <div class="bids">
-                <strong>Licitações:</strong>
+                <strong>Bids:</strong>
                 {% for bid in product.bids %}
                     {% if bid.user_id %}
                     <div class="bid">
                         {{ bid.username }} — {{ bid.value }}€, {{ bid.time_stamp.strftime("%Y-%m-%d %H:%M:%S") }}
                     </div>
                     {% else %}
-                    Sem licitações
+                    No bids
                     {% endif %}
                 {% endfor %}
             </div>
 
         {% else %}
-            Termina em: <span class="countdown" data-endtime="{{ product.end_date }}"></span><br>
-            <a href="/products/{{ product.id }}/bid" class="bid-button">Realizar Licitação</a><br>
+            Ends in: <span class="countdown" data-endtime="{{ product.end_date }}"></span><br>
+            <a href="/products/{{ product.id }}/bid" class="bid-button">Submit a Bid</a><br>
         {% endif %}
 
         <a href="/products{% if query or finished is not none %}?{% if query %}q={{ query }}{% endif %}{% if query and finished is not none %}&{% endif %}{% if finished is not none %}finished={{ 'true' if finished else 'false' }}{% endif %}{% endif %}">← Voltar à lista de produtos</a>

@@ -1,6 +1,10 @@
+# app/models/models.py
+
 from sqlalchemy import Column, Integer, String, ForeignKey, Date, DateTime, Text, Table
 from sqlalchemy.orm import relationship
+
 from ..db.connection import Base
+
 
 favourites_table = Table(
     "favourites",
@@ -61,7 +65,6 @@ class Product(Base):
     rsa_private_key_encrypted = Column(Text, nullable=True)
 
     bids = relationship("Bid", backref="product")
-    #favorited_by = relationship("User", secondary=favourites_table, back_populates="favourites")
 
 
 class Bid(Base):

@@ -1,3 +1,5 @@
+# app/api/bid.py
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -7,11 +9,10 @@ from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_302_FOUND
 from zoneinfo import ZoneInfo
 
-
 from ..db.connection import get_db
 from ..crud.bid import *
 from ..crud.product import get_product
-from ..schemas.schemas import BidOut
+
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -46,7 +47,7 @@ def create_bid(
         return templates.TemplateResponse("create_bid.html", {
             "request": request,
             "product": product,
-            "error": "O valor da licitação tem de ser pelo menos 1€ mais cara que o valor base do produto."
+            "error": "The bid amount must be at least €1 higher than the base price of the product"
         })
     now = datetime.now(tz=utc_tz)
     finished = product.end_date<=now
@@ -55,7 +56,7 @@ def create_bid(
             "request": request,
             "product": product,
             "finished": finished,
-            "error2": "O leilão já terminou"
+            "error2": "The auction has already ended"
         })
 
     create_new_bid(

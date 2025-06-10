@@ -22,25 +22,25 @@
                 <button type="submit">Register</button>
             </form>
             <form action="/login" method="get">
-                <button type="submit">Anuncie aqui</button>
+                <button type="submit">Announce here</button>
             </form>
         {% else %}
-            <span>Bem-vindo/a {{ request.session.get("username") }}! </span>
+            <span>Welcome {{ request.session.get("username") }}! </span>
             <form action="/profile" method="get" style="display:inline;">
-                 <button type="submit">Perfil</button>
+                 <button type="submit">Profile</button>
             </form>
             <form action="/logout" method="post" style="display:inline;">
                 <button type="submit">Logout</button>
             </form>
             <form action="/products/new" method="get">
-                <button type="submit">Anuncie aqui</button>
+                <button type="submit">Announce here</button>
             </form>
         {% endif %}
     </div>
 
-    <h1>Bem-vindo ao Site de Leilões</h1>
+    <h1>Welcome to the Auctions Site</h1>
     <form action="/products">
-        <button type="submit">Ver Produtos</button>
+        <button type="submit">See Products</button>
     </form>
 </body>
 </html>
