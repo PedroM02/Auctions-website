@@ -70,7 +70,7 @@ def create_product(
     create_new_product(user_id, name, description, base_value, end_dt, photos, db, start_dt)
     db.commit()
 
-    return RedirectResponse("/products", status_code=HTTP_302_FOUND)
+    return RedirectResponse("/products?finished=false", status_code=HTTP_302_FOUND)
 
 @router.get("/products", response_class=HTMLResponse, response_model=List[ProductOut])
 def show_all_products(request: Request, q: str = "", finished: bool = False, db: Session = Depends(get_db)):
@@ -82,7 +82,6 @@ def show_all_products(request: Request, q: str = "", finished: bool = False, db:
             (Product.description.ilike(f"%{q}%"))
         )
     now = datetime.now(tz=utc_tz)
-    print(Product.end_date)
     if finished:
         query = query.filter(Product.end_date <= now)
     else:

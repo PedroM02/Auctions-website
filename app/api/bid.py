@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from typing import List
-from datetime import datetime, timedelta
-from fastapi import APIRouter, Request, Depends, Form, UploadFile, File
+from datetime import datetime
+from fastapi import APIRouter, Request, Depends, Form
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_302_FOUND
+from zoneinfo import ZoneInfo
+
 
 from ..db.connection import get_db
 from ..crud.bid import *
@@ -14,6 +15,9 @@ from ..schemas.schemas import BidOut
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
+lisbon_tz = ZoneInfo("Europe/Lisbon")
+utc_tz = ZoneInfo("UTC")
+
 
 @router.get("/products/{product_id}/bid")
 def bid_form(request: Request, product_id: int, db: Session = Depends(get_db)):
@@ -44,11 +48,13 @@ def create_bid(
             "product": product,
             "error": "O valor da licitação tem de ser pelo menos 1€ mais cara que o valor base do produto."
         })
-    
-    if product.winner_id:
+    now = datetime.now(tz=utc_tz)
+    finished = product.end_date<=now
+    if finished:
         return templates.TemplateResponse("create_bid.html", {
             "request": request,
             "product": product,
+            "finished": finished,
             "error2": "O leilão já terminou"
         })
 

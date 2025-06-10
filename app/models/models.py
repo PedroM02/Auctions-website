@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Double, Integer, String, ForeignKey, Date, DateTime, Text, Table
+from sqlalchemy import Column, Integer, String, ForeignKey, Date, DateTime, Text, Table
 from sqlalchemy.orm import relationship
 from ..db.connection import Base
 
@@ -49,6 +49,10 @@ class Product(Base):
     end_date = Column(DateTime(timezone=True))
     vdf_start_time = Column(DateTime)
     vdf_output = Column(Text)
+    vdf_secret = Column(String)
+    vdf_modulus = Column(String)
+    vdf_difficulty = Column(Integer)
+    vdf_proof = Column(Text)
     photos = Column(Text)
     seller_id = Column(Integer, ForeignKey("siteLeiloes.user.id"), nullable=False)
     winner_id = Column(Integer, ForeignKey("siteLeiloes.user.id"))

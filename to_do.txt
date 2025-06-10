@@ -1,12 +1,14 @@
-criação, alteração e remoção de bids
+bug de aparecer botão da licitação mesmo depois do leilão terminar
+alteração e remoção de bids
 eliminar os products uma semana depois destes terminarem
 histórico de licitações
 página dos favoritos
 edição e remoção de produtos
 edição de contas de users
-ter um limite de fotos
+ter um limite de fotos nos produtos
 filtar products por product_type
 data de criação de conta no perfil
 O criador do produto não efetuar licitações no mesmo
 verificação de idade ao registar, ao dar algum erro ao registar não apagar os dados todos introduzidos
 guardar na bd a timezone do user para poder adaptar as horas
+atualizar bem o finished para não ser possível entrar na página da licitação depois do leilão acabar

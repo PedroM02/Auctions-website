@@ -8,5 +8,6 @@ python-multipart
 cryptography
 itsdangerous
 psycopg2-binary>=2.9
-bcrypt
+bcrypt==3.2.0
 passlib
+pycryptodome
