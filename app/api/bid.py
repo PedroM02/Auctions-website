@@ -7,17 +7,14 @@ from fastapi import APIRouter, Request, Depends, Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_302_FOUND
-from zoneinfo import ZoneInfo
 
 from ..db.connection import get_db
 from ..crud.bid import *
-from ..crud.product import get_product
+from ..crud.product import get_product, is_product_finished
 
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
-lisbon_tz = ZoneInfo("Europe/Lisbon")
-utc_tz = ZoneInfo("UTC")
 
 
 @router.get("/products/{product_id}/bid")
@@ -49,8 +46,7 @@ def create_bid(
             "product": product,
             "error": "The bid amount must be at least €1 higher than the base price of the product"
         })
-    now = datetime.now(tz=utc_tz)
-    finished = product.end_date<=now
+    finished = is_product_finished(product)
     if finished:
         return templates.TemplateResponse("create_bid.html", {
             "request": request,

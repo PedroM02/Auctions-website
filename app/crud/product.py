@@ -10,7 +10,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy.orm import Session
 from fastapi import UploadFile
 from typing import List
-from datetime import datetime
+from datetime import datetime, timedelta, time
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.hazmat.primitives.asymmetric import padding
 from cryptography.hazmat.primitives import hashes
@@ -24,6 +24,63 @@ from .user import get_user_by_id
 lisbon_tz = ZoneInfo("Europe/Lisbon")
 utc_tz = ZoneInfo("UTC")
 logger = logging.getLogger("LS")
+
+
+def parse_query_and_products(db: Session, q: str, f: bool):
+    products = get_all_products(db)
+    query = db.query(Product)
+    if q:
+        query = query.filter(
+            (Product.name.ilike(f"%{q}%")) |
+            (Product.description.ilike(f"%{q}%"))
+        )
+    now = datetime.now(tz=utc_tz)
+    if f:
+        query = query.filter(Product.end_date <= now)
+    else:
+        query = query.filter(Product.end_date > now)
+
+    products = query.all()
+
+    for product in products:
+        if product.end_date:
+            product.end_date = product.end_date.astimezone(lisbon_tz)
+        if product.start_date:
+            product.start_date = product.start_date.astimezone(lisbon_tz)
+        product.end_date_str = product.end_date.astimezone(lisbon_tz).strftime("%d-%m-%Y %H:%M")
+
+    return products, f
+
+
+def maximum_product_end_dt(end_dt: datetime):
+    max_weeks = 24
+    return end_dt > datetime.now(tz=utc_tz) + timedelta(weeks=max_weeks), f"{max_weeks} weeks"
+
+
+def minimum_product_end_dt(end_dt: datetime):
+    start_dt = datetime.now(tz=utc_tz)
+    min_weeks = 1
+    return end_dt < start_dt + timedelta(weeks=min_weeks), f"{min_weeks} week", start_dt
+
+
+def parse_end_dt(end_date: str, end_time: str):
+    # parse product end_date
+    date_part = datetime.strptime(end_date, "%Y-%m-%d").date()
+
+    # parse product hour and minute if provided, otherwise default to 18:00
+    if end_time:
+        hour, minute = map(int, end_time.split(":"))
+    else:
+        hour, minute = 18, 0
+
+    end_dt_local = datetime.combine(date_part, time(hour, minute)).replace(tzinfo=lisbon_tz)
+    return end_dt_local.astimezone(utc_tz)
+
+
+def is_product_finished(product: Product):
+    now = datetime.now(tz=utc_tz)
+    return product.end_date<=now
+
 
 def get_valid_bids_for_product(db: Session, product: Product):
     if not product.rsa_private_key_encrypted:
@@ -84,11 +141,14 @@ def get_valid_bids_for_product(db: Session, product: Product):
     # sort the bids first by value in descending order, then by time_stamp in ascending order
     return sorted(valid_bids, key=lambda x: (-x["value"], x["time_stamp"]))
 
+
 def get_all_products(db: Session):
     return db.query(Product).all()
 
+
 def get_product(db: Session, product_id: int):
     return db.get(Product, product_id)
+
 
 def get_complete_product(db: Session, product_id: int):
     product = db.get(Product, product_id)
@@ -144,6 +204,7 @@ def get_all_products_with_seller_name(db: Session):
     
     return product_data
 
+
 def create_new_product(user_id: any,
                        name: str,
                        description: str,
@@ -198,9 +259,8 @@ def create_new_product(user_id: any,
 
     db.add(new_product)
     db.commit()
-
-
     
+
 def finalize_expired_auctions(db: Session):
     now = datetime.now(tz=utc_tz)
     products = db.query(Product).filter(
@@ -230,7 +290,7 @@ def finalize_expired_auctions(db: Session):
             logger.info(f"Decrypting private_key from product with id {product.id}")
             vdf_key = hashlib.sha256(str(output).encode()).digest()
             decrypted_pem = decrypt_with_vdf_key(vdf_key, product.rsa_private_key_encrypted)
-            logger.debug(f"🔍 PEM decrypted for product with id {product.id}:\n{decrypted_pem}")
+            logger.debug(f"PEM decrypted for product with id {product.id}:\n{decrypted_pem}")
             if not decrypted_pem.startswith("-----BEGIN"):
                 raise ValueError(f"Malformed PEM key for product with id {product.id}")
             private_key = load_pem_private_key(decrypted_pem.encode("utf-8"), password=None)

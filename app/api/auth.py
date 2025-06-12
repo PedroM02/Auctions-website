@@ -1,9 +1,6 @@
 # app/api/auth.py
 
-import os
-import shutil
 
-from datetime import datetime
 from fastapi import APIRouter, Request, Form, Depends, UploadFile, File
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -37,33 +34,9 @@ def register_user(request: Request, name: str = Form(...), password: str = Form(
     # verify if there are no spaces in the username
     if not verify_username_spaces(name):
         return templates.TemplateResponse("register.html", {"request": request, "error": "Username can't have spaces"})
-
-    # protect the password
-    hashed_password = bcrypt.hash(password)
     
-    # path photo saving
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-    static_dir = os.path.join(project_root, "static", "profile_pictures")
-    os.makedirs(static_dir, exist_ok=True)
+    new_user = create_user(name, email, password, birth_date, profile_picture)
 
-    profile_path = None
-    if profile_picture:
-        filename = f"profile_{name}_{profile_picture.filename}"
-        full_path = os.path.join(static_dir, filename)
-
-        with open(full_path, "wb") as buffer:
-            shutil.copyfileobj(profile_picture.file, buffer)
-
-        profile_path = f"/static/profile_pictures/{filename}"
-
-    # create and save the new User
-    new_user = User(
-        name=name,
-        password=hashed_password,
-        email=email,
-        birthdate=datetime.strptime(birth_date, "%Y-%m-%d"),
-        profile_picture=profile_path
-    )
     db.add(new_user)
     db.commit()
 
@@ -71,7 +44,6 @@ def register_user(request: Request, name: str = Form(...), password: str = Form(
     request.session["user_id"] = new_user.id
     request.session["username"] = new_user.name
     return RedirectResponse(url="/", status_code=HTTP_302_FOUND)
-
 
 
 @router.get("/login", response_class=HTMLResponse)

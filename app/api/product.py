@@ -1,12 +1,11 @@
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import datetime, timedelta, time
+from datetime import datetime
 from fastapi import APIRouter, Request, Depends, Form, UploadFile, File
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from starlette.status import HTTP_302_FOUND
 
-from zoneinfo import ZoneInfo
 from ..db.connection import get_db
 from ..crud.product import *
 from ..schemas.schemas import ProductOut
@@ -14,8 +13,6 @@ from ..schemas.schemas import ProductOut
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
-lisbon_tz = ZoneInfo("Europe/Lisbon")
-utc_tz = ZoneInfo("UTC")
 
 
 @router.get("/products/new", response_class=HTMLResponse)
@@ -40,30 +37,21 @@ def create_product(
     if not user_id:
         return RedirectResponse("/", status_code=HTTP_302_FOUND)
 
-    # parse product end_date
-    date_part = datetime.strptime(end_date, "%Y-%m-%d").date()
+    end_dt = parse_end_dt(end_date, end_time)
 
-    # parse product hour and minute if provided, otherwise default to 18:00
-    if end_time:
-        hour, minute = map(int, end_time.split(":"))
-    else:
-        hour, minute = 18, 0
+    is_max_product_end_dt, max_weeks = maximum_product_end_dt(end_dt)
+    is_min_product_end_dt, min_weeks, start_dt = minimum_product_end_dt(end_dt)
 
-    end_dt_local = datetime.combine(date_part, time(hour, minute)).replace(tzinfo=lisbon_tz)
-    end_dt = end_dt_local.astimezone(utc_tz)
-
-    start_dt = datetime.now(tz=utc_tz)
-
-    if end_dt > datetime.now(tz=utc_tz) + timedelta(weeks=24):
+    if is_max_product_end_dt:
         return templates.TemplateResponse("create_product.html", {
             "request": request,
-            "error": "The auction must have less than 6 months"
+            "error": f"The auction must have less than {max_weeks}"
         })
     
-    if end_dt < start_dt + timedelta(weeks=1):
+    if is_min_product_end_dt:
         return templates.TemplateResponse("create_product.html", {
             "request": request,
-            "error": "The auction must have at least 1 week"
+            "error": f"The auction must have at least {min_weeks}"
         })
     
     create_new_product(user_id, name, description, base_value, end_dt, photos, db, start_dt)
@@ -73,32 +61,10 @@ def create_product(
 
 @router.get("/products", response_class=HTMLResponse, response_model=List[ProductOut])
 def show_all_products(request: Request, q: str = "", finished: bool = False, db: Session = Depends(get_db)):
-    products = get_all_products(db)
-    query = db.query(Product)
-    if q:
-        query = query.filter(
-            (Product.name.ilike(f"%{q}%")) |
-            (Product.description.ilike(f"%{q}%"))
-        )
-    now = datetime.now(tz=utc_tz)
-    if finished:
-        query = query.filter(Product.end_date <= now)
-    else:
-        query = query.filter(Product.end_date > now)
-
-    products = query.all()
-
-    for product in products:
-        if product.end_date:
-            product.end_date = product.end_date.astimezone(lisbon_tz)
-        if product.start_date:
-            product.start_date = product.start_date.astimezone(lisbon_tz)
-        product.end_date_str = product.end_date.astimezone(lisbon_tz).strftime("%d-%m-%Y %H:%M")
-
-
+    products, f = parse_query_and_products(db, q, finished)
     return templates.TemplateResponse(
         "products.html",
-        {"request": request, "products": products, "query": q, "finished": finished})
+        {"request": request, "products": products, "query": q, "finished": f})
 
 @router.get("/products/{product_id}", response_class=HTMLResponse)
 def show_product(request: Request, product_id: int, q: str = "", finished: bool = False, db: Session = Depends(get_db)):
