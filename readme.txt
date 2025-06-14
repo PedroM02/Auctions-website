@@ -1,8 +1,39 @@
-frontend
-api(é onde estão definidas as rotas e retorna o valor que vem do crud)
-crud(tem a lógica da aplicação, é onde estão as funções que retornam o que é pedido pelo user usando a informação que está na base de dados)
-models(cria o modelo da base de dados(tabelas) usando classes de python)
-db.connection(conecta à base dedados)
-schemas(é onde estão as interfaces dos objetos que vão ser retornados pela api)
+# Sealed-Bid Auction Website
 
-api->crud->models->db.connection
+A sealed-bid auction is a type of auction in which, while it is ongoing, nobody can see the bids
+already made by potential buyers. The focus here is : nobody can see the bids already made.
+This is where cryptographic tools like RSA and Verifiable Delay Functions (VDFs) come into
+play.
+In this project I developed a sealed-bid web application using modern tools and crypto-
+graphic primitives. The backend was built with Python, using the FastAPI framework and
+SQLAlchemy for API management and database interaction. DBeaver was used for visualizing
+and managing the database. For cryptographic security, RSA encryption and a custom imple-
+mentation of a Verifiable Delay Function, inspired by the work of Boneh et al. [1]. Celery was
+employed to execute parallel tasks independently of the API, and Docker was used to orchestrate
+the initialization and deployment of all components.
+The main goal of this project was to explore the use of VDFs in a practical setting, demon-
+strating how they can be applied to delay decryption in time-sensitive applications such as
+auctions.
+
+---
+
+## Getting Started with Docker
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/sealed-bid-auction.git
+cd sealed-bid-auction
+
+### 2. Build and run all services
+
+```bash
+docker-compose up --build
+
+### 3. To stop the services
+```bash
+docker-compose down
+
+### 4. to remove volumes and containers
+```bash
+docker-compose down -v --remove-orphans

@@ -219,7 +219,7 @@ def create_new_product(user_id: any,
     vdf_params = setup(delay=difficulty)
     modulus = vdf_params["modulus"]
 
-    private_key, private_pem, public_pem = generate_rsa_keys()
+    private_pem, public_pem = generate_rsa_keys()
 
     secret = os.urandom(32)  # VDF secret
     output, proof = eval_vdf(vdf_params, secret)

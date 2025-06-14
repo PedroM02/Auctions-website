@@ -1,4 +1,3 @@
 app/private.py
-docker-compose.yml
-Dockerfile
-app/connection.py
+.env
+app/__pychache__

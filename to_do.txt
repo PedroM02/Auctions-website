@@ -1,16 +1,19 @@
-enquanto a vdf corre aparecer no ecrã(calculando vencedor)
-quando uma pessoa faz uma licitação aparecer uma notificação a dizer que a licitação foi feita
-histórico de licitações
-bug de aparecer botão da licitação mesmo depois do leilão terminar
-alteração e remoção de bids
-eliminar os products uma semana depois destes terminarem
-página dos favoritos
-edição e remoção de produtos
-edição de contas de users
-ter um limite de fotos nos produtos
-filtar products por product_type
-data de criação de conta no perfil
-O criador do produto não efetuar licitações no mesmo
-verificação de idade ao registar, ao dar algum erro ao registar não apagar os dados todos introduzidos
-guardar na bd a timezone do user para poder adaptar as horas
-atualizar bem o finished para não ser possível entrar na página da licitação depois do leilão acabar
+It is still possible to improve the project adding more features like:
+• E-mail verification;
+• Favourite auctions page;
+• Better UI;
+• Possibility to see the profile picture of the seller by clicking on his name on the Product
+details page;
+• If the VDF takes to long, it appears on the web site ”calculating the winner”;
+• Bids history page, where the user can see the bids he already made;
+• Editing and removal of bids already made;
+• Limit the number of photos when creating an auction;
+11
+• Possibility of editing the description, name and add photos in one auction already ongoing;
+• Filter the products when searching for auctions using the product type;
+• User registration date;
+• Make impossible for the seller to submit a bid for his own product;
+• Age verification(+18) when creating an account;
+• Save on the data base the timezone of the User so it can show the right time (right now
+it only works with the timezone of Portugal);
+• User profile editing.

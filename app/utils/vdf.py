@@ -102,7 +102,7 @@ def verify_vdf(params: dict, input_bytes: bytes, output: int, proof: int) -> boo
     ) % params['modulus']
 
 # =========================
-# Example usage
+# Test
 # =========================
 
 if __name__ == "__main__":

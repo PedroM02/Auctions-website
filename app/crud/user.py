@@ -66,3 +66,6 @@ def create_user(name: str, email: str, password: str, birth_date: str, profile_p
         birthdate=datetime.strptime(birth_date, "%Y-%m-%d"),
         profile_picture=profile_path
     )
+
+def verify_password(password: str, user: User):
+    return bcrypt.verify(password, user.password)

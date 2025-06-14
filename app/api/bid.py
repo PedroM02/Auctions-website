@@ -46,6 +46,7 @@ def create_bid(
             "product": product,
             "error": "The bid amount must be at least €1 higher than the base price of the product"
         })
+    
     finished = is_product_finished(product)
     if finished:
         return templates.TemplateResponse("create_bid.html", {

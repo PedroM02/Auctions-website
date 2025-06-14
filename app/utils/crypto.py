@@ -12,8 +12,8 @@ logger = logging.getLogger("LS")
 
 def generate_rsa_keys():
     """Generate RSA key and export in PEM format (private and public)"""
+    
     private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
-
     private_pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.TraditionalOpenSSL,
@@ -26,7 +26,7 @@ def generate_rsa_keys():
         format=serialization.PublicFormat.SubjectPublicKeyInfo
     ).decode("utf-8")
 
-    return private_key, private_pem, public_pem
+    return private_pem, public_pem
 
 def encrypt_with_vdf_key(key_bytes: bytes, plaintext_bytes: bytes) -> str:
     """Use VDF key (hash) to encrypt PEM with Fernet"""

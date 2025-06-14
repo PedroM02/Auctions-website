@@ -1,0 +1,56 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: siteLeiloes
+    ports:
+      - "5432:5432"
+  fastapi_app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres?options=-csearch_path%3DsiteLeiloes
+  web:
+    build: .
+    container_name: fastapi_app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+
+  celery:
+    build: .
+    container_name: celery_worker
+    command: celery -A celery_worker.celery_app worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres?options=-csearch_path%3DsiteLeiloes
+
+  celery_beat:
+    build: .
+    container_name: celery_beat
+    command: celery -A celery_worker beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    environment:
+      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres?options=-csearch_path%3DsiteLeiloes
+
+
+  redis:
+    image: redis:7
+    container_name: redis_broker
+    ports:
+      - "6379:6379"

@@ -8,8 +8,11 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from .private import section_key
 from .api import bid, product, home, auth, user
-from .db.connection import Base, engine
+from .db.connection import Base, engine, SessionLocal, create_schema_if_not_exists
 
+session = SessionLocal()
+create_schema_if_not_exists(session)
+session.close()
 
 # logging global configuration
 logging.basicConfig(

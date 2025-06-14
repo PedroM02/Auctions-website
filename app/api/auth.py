@@ -52,10 +52,9 @@ def login_form(request: Request):
 
 @router.post("/login")
 def login_user(request: Request, name: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
-    print(f"Recebido: username={name}, password={password}")
 
     user = get_user_by_username(db, name)
-    if not user or not bcrypt.verify(password, user.password):
+    if not user or not verify_password(password, user):
         return templates.TemplateResponse("login.html", {"request": request, "error": "Login failed. Invalid credentials provided"})
     if not verify_username_spaces(name):
         return templates.TemplateResponse("login.html", {"request": request, "error": "Login failed. Username can't have spaces"})
