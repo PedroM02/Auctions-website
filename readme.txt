@@ -22,7 +22,7 @@ auctions.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/sealed-bid-auction.git
+git clone https://github.com/PedroM02/Auctions-website.git
 cd sealed-bid-auction
 
 ### 2. Build and run all services
