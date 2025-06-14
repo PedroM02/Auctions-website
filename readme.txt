@@ -21,19 +21,25 @@ auctions.
 
 ### 1. Clone the repository
 
-```bash
+<pre>```bash
 git clone https://github.com/PedroM02/Auctions-website.git
-cd sealed-bid-auction
+cd sealed-bid-auction```
+</pre>
 
 ### 2. Build and run all services
 
-```bash
-docker-compose up --build
+<pre>```bash
+docker-compose up --build```
+</pre>
 
 ### 3. To stop the services
-```bash
-docker-compose down
+
+<pre>```bash
+docker-compose down```
+</pre>
 
 ### 4. to remove volumes and containers
-```bash
-docker-compose down -v --remove-orphans
+
+<pre>```bash
+docker-compose down -v --remove-orphans```
+</pre>
