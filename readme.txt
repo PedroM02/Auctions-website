@@ -1,19 +1,16 @@
 # Sealed-Bid Auction Website
 
 A sealed-bid auction is a type of auction in which, while it is ongoing, nobody can see the bids
-already made by potential buyers. The focus here is : nobody can see the bids already made.
-This is where cryptographic tools like RSA and Verifiable Delay Functions (VDFs) come into
-play.
-In this project I developed a sealed-bid web application using modern tools and crypto-
-graphic primitives. The backend was built with Python, using the FastAPI framework and
-SQLAlchemy for API management and database interaction. DBeaver was used for visualizing
-and managing the database. For cryptographic security, RSA encryption and a custom imple-
-mentation of a Verifiable Delay Function, inspired by the work of Boneh et al. [1]. Celery was
-employed to execute parallel tasks independently of the API, and Docker was used to orchestrate
-the initialization and deployment of all components.
-The main goal of this project was to explore the use of VDFs in a practical setting, demon-
-strating how they can be applied to delay decryption in time-sensitive applications such as
-auctions.
+that have already been submitted by potential buyers. The key principle is that **no one can see the current bids**.
+
+To enforce this confidentiality, cryptographic tools like RSA and Verifiable Delay Functions (VDFs) are used.
+
+In this project, I developed a sealed-bid web application using modern tools and cryptographic primitives.  
+The backend is built with **Python** using the **FastAPI** framework and **SQLAlchemy** for database interactions.  
+**DBeaver** was used for visualizing and managing the database. For cryptographic security, I implemented **RSA encryption** and a custom **Verifiable Delay Function (VDF)**, inspired by the work of Boneh et al. [1].  
+**Celery** is used to execute background tasks independently of the API, and **Docker** is used to orchestrate and deploy all components.
+
+The main goal of this project is to explore the use of VDFs in a practical setting, demonstrating how they can delay decryption in time-sensitive applications such as auctions.
 
 ---
 
@@ -21,22 +18,25 @@ auctions.
 
 ### 1. Clone the repository
 
-<pre>```bash git clone https://github.com/PedroM02/Auctions-website.git cd sealed-bid-auction```</pre>
+```bash
+git clone https://github.com/PedroM02/Auctions-website.git
+cd Auctions-website
+```
 
 ### 2. Build and run all services
 
-<pre>```bash
-docker-compose up --build```
-</pre>
+```bash
+docker-compose up --build
+```
 
 ### 3. To stop the services
 
-<pre>```bash
-docker-compose down```
-</pre>
+```bash
+docker-compose down
+```
 
-### 4. to remove volumes and containers
+### 4. To remove volumes and containers
 
-<pre>```bash
-docker-compose down -v --remove-orphans```
-</pre>
+```bash
+docker-compose down -v --remove-orphans
+```
