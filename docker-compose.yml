@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: siteLeiloes
+      POSTGRES_DB: public
     ports:
       - "5432:5432"
   fastapi_app:
@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres?options=-csearch_path%3DsiteLeiloes
+      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres
   web:
     build: .
     container_name: fastapi_app
@@ -34,7 +34,7 @@ services:
       - redis
       - db
     environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres?options=-csearch_path%3DsiteLeiloes
+      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres
 
   celery_beat:
     build: .
@@ -46,7 +46,7 @@ services:
       - redis
       - db
     environment:
-      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres?options=-csearch_path%3DsiteLeiloes
+      DATABASE_URL: postgresql+psycopg2://postgres:1234@db:5432/postgres
 
 
   redis:

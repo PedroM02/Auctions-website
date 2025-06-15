@@ -9,14 +9,12 @@ from ..db.connection import Base
 favourites_table = Table(
     "favourites",
     Base.metadata,
-    Column("user_id", Integer, ForeignKey("siteLeiloes.user.id"), primary_key=True),
-    Column("product_id", Integer, ForeignKey("siteLeiloes.product.id"), primary_key=True),
-    schema="siteLeiloes"
+    Column("user_id", Integer, ForeignKey("user.id"), primary_key=True),
+    Column("product_id", Integer, ForeignKey("product.id"), primary_key=True),
 )
 
 class User(Base):
     __tablename__ = "user"
-    __table_args__ = {"schema": "siteLeiloes"}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False, unique=True)
@@ -31,7 +29,6 @@ class User(Base):
 
 class Product_type(Base):
     __tablename__ = "product_type"
-    __table_args__ = {"schema": "siteLeiloes"}
 
 
     id = Column(Integer, primary_key=True, index=True)
@@ -43,7 +40,6 @@ class Product_type(Base):
 
 class Product(Base):
     __tablename__ = "product"
-    __table_args__ = {"schema": "siteLeiloes"}
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
@@ -58,9 +54,9 @@ class Product(Base):
     vdf_difficulty = Column(Integer)
     vdf_proof = Column(Text)
     photos = Column(Text)
-    seller_id = Column(Integer, ForeignKey("siteLeiloes.user.id"), nullable=False)
-    winner_id = Column(Integer, ForeignKey("siteLeiloes.user.id"))
-    product_type_id = Column(Integer, ForeignKey("siteLeiloes.product_type.id"))
+    seller_id = Column(Integer, ForeignKey("user.id"), nullable=False)
+    winner_id = Column(Integer, ForeignKey("user.id"))
+    product_type_id = Column(Integer, ForeignKey("product_type.id"))
     rsa_public_key = Column(Text, nullable=True)
     rsa_private_key_encrypted = Column(Text, nullable=True)
 
@@ -69,13 +65,12 @@ class Product(Base):
 
 class Bid(Base):
     __tablename__ = "bid"
-    __table_args__ = {"schema": "siteLeiloes"}
 
     id = Column(Integer, primary_key=True, index=True)
     time_stamp = Column(DateTime, nullable=False)
     encrypted_value = Column(Text, nullable=False)
     commitment_hash = Column(Text, nullable=False)
     salt = Column(Text, nullable=False)
-    user_id = Column(Integer, ForeignKey("siteLeiloes.user.id"))
-    product_id = Column(Integer, ForeignKey("siteLeiloes.product.id"))
+    user_id = Column(Integer, ForeignKey("user.id"))
+    product_id = Column(Integer, ForeignKey("product.id"))
 

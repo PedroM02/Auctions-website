@@ -8,11 +8,11 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from .private import section_key
 from .api import bid, product, home, auth, user
-from .db.connection import Base, engine, SessionLocal, create_schema_if_not_exists
+from .db.connection import Base, engine
 
-session = SessionLocal()
-create_schema_if_not_exists(session)
-session.close()
+
+# DB inicialization
+Base.metadata.create_all(bind=engine)
 
 # logging global configuration
 logging.basicConfig(
@@ -23,8 +23,6 @@ logging.basicConfig(
 logger = logging.getLogger("LS")
 logger.info("Iniciando aplicação FastAPI")
 
-# DB inicialization
-Base.metadata.create_all(bind=engine)
 
 # create fastapi app
 app = FastAPI()
