@@ -16,7 +16,7 @@ The main goal of this project is to explore the use of VDFs in a practical setti
 
 ## Getting Started with Docker
 
-### 1. Clone the repository
+### 1. Clone the repository or download the .zip
 
 ```bash
 git clone https://github.com/PedroM02/Auctions-website.git
