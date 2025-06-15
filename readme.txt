@@ -25,7 +25,7 @@ git clone https://github.com/PedroM02/Auctions-website.git
 cd Auctions-website
 ´´´
 
-### 2. Create private.py
+### 2. Create private.py and Docker download
 
 To run the project you need to create the file .app/private.py with the following code:
 
@@ -33,6 +33,8 @@ To run the project you need to create the file .app/private.py with the followin
 db_pass = "your_db_pass"  # default password = 1234
 section_key = "your_random_section_key"
 ´´´ 
+
+Run the docker desktop. In case you don't have it you download it here https://www.docker.com/products/docker-desktop/
 
 ### 3. Build and run all services
 
