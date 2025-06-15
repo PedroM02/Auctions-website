@@ -7,7 +7,7 @@ To enforce this confidentiality, cryptographic tools like RSA and Verifiable Del
 
 In this project, I developed a sealed-bid web application using modern tools and cryptographic primitives.  
 The backend is built with **Python** using the **FastAPI** framework and **SQLAlchemy** for database interactions.  
-**DBeaver** was used for visualizing and managing the database. For cryptographic security, I implemented **RSA encryption** and a custom **Verifiable Delay Function (VDF)**, inspired by the work of Boneh et al. [1].  
+**DBeaver** was used for visualizing and managing the database. For cryptographic security, I implemented **RSA encryption** and a custom **Verifiable Delay Function (VDF)**, inspired by the work of Boneh et al.  
 **Celery** is used to execute background tasks independently of the API, and **Docker** is used to orchestrate and deploy all components.
 
 The main goal of this project is to explore the use of VDFs in a practical setting, demonstrating how they can delay decryption in time-sensitive applications such as auctions.
@@ -20,23 +20,38 @@ The main goal of this project is to explore the use of VDFs in a practical setti
 
 ```bash
 git clone https://github.com/PedroM02/Auctions-website.git
-cd Auctions-website
 ```
+´´´bash
+cd Auctions-website
+´´´
 
-### 2. Build and run all services
+### 2. Create private.py
+
+To run the project you need to create the file .app/private.py with the following code:
+
+´´´python
+db_pass = "your_db_pass"  # default password = 1234
+section_key = "your_random_section_key"
+´´´ 
+
+### 3. Build and run all services
 
 ```bash
 docker-compose up --build
 ```
 
-### 3. To stop the services
+### 4. To stop the services
 
 ```bash
 docker-compose down
 ```
 
-### 4. To remove volumes and containers
+### 5. To remove volumes and containers
 
 ```bash
 docker-compose down -v --remove-orphans
 ```
+
+To see the website open the locahost:8000 link on the browser.
+
+
