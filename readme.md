@@ -17,7 +17,8 @@ The main goal of this project is to explore the use of VDFs in a practical setti
 ## Downloads
 
 ### Git
-To clone the project you will need to have git installed, in case you don't have it you can download it here https://github.com/git-guides/install-git
+To clone the project you will need to have git installed, in case you don't have it you can download it here: https://github.com/git-guides/install-git
+If you don't want to use git you can download the zip project here: https://github.com/PedroM02/Auctions-website.git
 
 ### Docker Desktop
 In case you don't have Docker you can download it here https://www.docker.com/products/docker-desktop/
@@ -28,8 +29,9 @@ In case you don't have Docker you can download it here https://www.docker.com/pr
 
 ## Getting Started with Docker
 
-### 1. Clone the repository or download the .zip
+### 1. Clone the repository
 
+If you downloaded the .zip project then you don't need to clone it.
 ```bash
 git clone https://github.com/PedroM02/Auctions-website.git
 ```
