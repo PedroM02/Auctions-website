@@ -14,6 +14,18 @@ The main goal of this project is to explore the use of VDFs in a practical setti
 
 ---
 
+## Downloads
+
+### Git
+to clone the project you will need to have git installed, in case you don't have it you can download it here https://github.com/git-guides/install-git
+
+### Docker Desktop
+In case you don't have Docker you can download it here https://www.docker.com/products/docker-desktop/
+
+
+---
+
+
 ## Getting Started with Docker
 
 ### 1. Clone the repository or download the .zip
@@ -29,18 +41,20 @@ cd Auctions-website
 
 To run the project you need to create the file .app/private.py with the following code:
 
-´´´python
+```python
 db_pass = "your_db_pass"  # default password = 1234
 section_key = "your_random_section_key"
-´´´ 
+```
 
-Run the docker desktop. In case you don't have it you download it here https://www.docker.com/products/docker-desktop/
+Run the docker desktop.
 
 ### 3. Build and run all services
 
 ```bash
 docker-compose up --build
 ```
+
+To see the website open the locahost:8000 link on the browser.
 
 ### 4. To stop the services
 
@@ -53,7 +67,3 @@ docker-compose down
 ```bash
 docker-compose down -v --remove-orphans
 ```
-
-To see the website open the locahost:8000 link on the browser.
-
-
