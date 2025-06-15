@@ -20,16 +20,6 @@ def get_user_by_id(db: Session, id: int):
 def verify_duplicate_email(db: Session, email: str):
     return db.query(User).filter(User.email == email).first()
 
-def delete_user(db, user):
-    if user:
-        db.delete(user)
-        db.commit()
-        # Remove o ficheiro se não for a imagem default
-        if not user.profile_picture.endswith("default-avatar-profile-icon.jpg"):
-            try:
-                os.remove("." + user.profile_picture)
-            except FileNotFoundError:
-                pass
 
 def create_user_obj(user_data: User):
     return {

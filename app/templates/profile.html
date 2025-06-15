@@ -19,13 +19,6 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Birth date:</strong> {{ user.birth_date }}</p>
 
-    <form id="deleteForm" action="/delete-account" method="post" style="display:inline;">
-    <button type="submit" onclick="return confirm('Are you sure that you want to delete your account? This action is irreversible.');"
-            style="background-color: red; color: white; padding: 10px; border: none; border-radius: 5px;">
-        Delete Account
-    </button>
-    </form>
-
     <br>
     <a href="/">Back Home</a>
 </body>

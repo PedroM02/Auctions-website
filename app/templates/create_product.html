@@ -37,7 +37,7 @@
         window.addEventListener("DOMContentLoaded", () => {
             const today = new Date();
             const maxDate = new Date();
-            maxDate.setDate(today.getDate() + 30);
+            maxDate.setMonth(today.getMonth() + 6);
 
             const formatDate = (date) => {
                 const year = date.getFullYear();

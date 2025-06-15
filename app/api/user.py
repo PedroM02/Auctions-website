@@ -12,20 +12,6 @@ from ..crud.user import *
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-from fastapi import status
-
-@router.post("/delete-account")
-def delete_account(request: Request, db: Session = Depends(get_db)):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-    user = get_user_by_id(db, user_id)
-    delete_user(db, user)
-
-    # automatic logout
-    request.session.clear()
-    return RedirectResponse("/", status_code=status.HTTP_302_FOUND)
-
 
 @router.get("/profile", response_class=HTMLResponse)
 def profile(request: Request, db: Session = Depends(get_db)):

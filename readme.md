@@ -44,7 +44,7 @@ cd Auctions-website
 To run the project you need to create the file .app/private.py with the following code:
 
 ```python
-db_pass = "your_db_pass"  # default password = 1234
+db_pass = "your_db_pass"  # if you don't know it maybe it's the default password = 1234
 section_key = "your_random_section_key"
 ```
 
