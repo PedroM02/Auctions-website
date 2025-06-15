@@ -17,7 +17,7 @@ The main goal of this project is to explore the use of VDFs in a practical setti
 ## Downloads
 
 ### Git
-to clone the project you will need to have git installed, in case you don't have it you can download it here https://github.com/git-guides/install-git
+To clone the project you will need to have git installed, in case you don't have it you can download it here https://github.com/git-guides/install-git
 
 ### Docker Desktop
 In case you don't have Docker you can download it here https://www.docker.com/products/docker-desktop/
@@ -33,9 +33,9 @@ In case you don't have Docker you can download it here https://www.docker.com/pr
 ```bash
 git clone https://github.com/PedroM02/Auctions-website.git
 ```
-´´´bash
+```bash
 cd Auctions-website
-´´´
+```
 
 ### 2. Create private.py and Docker download
 
@@ -61,6 +61,8 @@ To see the website open the locahost:8000 link on the browser.
 ```bash
 docker-compose down
 ```
+
+Or simply do (ctrl c) on terminal.
 
 ### 5. To remove volumes and containers
 
